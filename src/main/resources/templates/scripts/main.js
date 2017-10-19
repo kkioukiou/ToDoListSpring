@@ -2,9 +2,9 @@
 
 function printFullArray(array) {
     clearOutPrint();
-    $.each(array, function(index, toDoObject){
-        list.addItem(toDoObject.id, toDoObject.itemValue, toDoObject.checked);
-    });
+    for (var i = 0; i < array.length; i++){
+        list.addItem(array[i].id, array[i].itemValue, array[i].checked, array[i].children);
+    }
 }
 
 function clearOutPrint(){

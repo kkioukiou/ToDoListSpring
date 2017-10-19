@@ -25,6 +25,19 @@ function ToDoRepository(){
         });
     };
 
+    this.insertChildItem = function(parentId, itemValue) {
+        $.ajax({
+            type: 'POST',
+            url: '/api/todo/item',
+            contentType: 'application/json',
+            data: JSON.stringify({"parentId" : parentId, "itemValue" : itemValue}),
+            success: function (response) {
+                console.log(response);
+                toDoRepository.getItems();
+            }
+        });
+    };
+
     this.deleteItem = function(id) {
         $.ajax({
             type: 'DELETE',
@@ -43,6 +56,5 @@ function ToDoRepository(){
             }
         });
     }
-
 }
 

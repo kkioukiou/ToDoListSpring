@@ -17,7 +17,7 @@ public class ToDoController {
 
     @GetMapping("/items")
     public @ResponseBody Iterable<ToDoListItem> getAllItems(){
-        return toDoItemsRepository.findAll();
+        return toDoItemsRepository.findByParentIdIsNull();
     }
 
     @PostMapping(value = "/item")
@@ -28,23 +28,31 @@ public class ToDoController {
         return new ResponseEntity(str, HttpStatus.OK);
     }
 
+    @PostMapping(value = "/item", produces = "application/json", consumes="application/json")
+    public ResponseEntity insertChildItem(@RequestBody ToDoListItem toDoListItem){
+        ToDoListItem t = new ToDoListItem();
+        t.setItemValue(toDoListItem.getItemValue());
+        t.setParentId(toDoListItem.getParentId());
+        toDoItemsRepository.save(t);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @DeleteMapping("/item/{id}")
-    public ResponseEntity deleteItem(@PathVariable Long id){
+    public ResponseEntity deleteItem(@PathVariable int id){
         toDoItemsRepository.delete(id);
         return new ResponseEntity(id, HttpStatus.OK);
     }
 
     @PutMapping(path = "/item")
-    public ResponseEntity checkedItem(@RequestBody Long id){
+    public ResponseEntity checkedItem(@RequestBody int id){
         ToDoListItem t;
         t = toDoItemsRepository.findOne(id);
         if (t.isChecked()) {
             t.setChecked(false);
-            toDoItemsRepository.save(t);
         } else {
             t.setChecked(true);
-            toDoItemsRepository.save(t);
         }
+        toDoItemsRepository.save(t);
         return new ResponseEntity(id, HttpStatus.OK);
     }
 }

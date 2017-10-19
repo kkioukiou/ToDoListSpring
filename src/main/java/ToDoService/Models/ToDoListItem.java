@@ -1,26 +1,29 @@
 package ToDoService.Models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
-public class ToDoListItem {
+@Table(name = "to_do_list_item")
+public class ToDoListItem implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @Column(name = "id")
+    private int id;
+    @Column(name = "item_value")
     private String itemValue;
+    @Column(name = "is_checked")
     private boolean isChecked;
+    @Column(name = "parent_id")
+    private Integer parentId;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @OneToMany(mappedBy = "parentId", cascade = CascadeType.ALL)
+    private List<ToDoListItem> children = new ArrayList<>();
 
     public String getItemValue() {
         return itemValue;
@@ -36,5 +39,29 @@ public class ToDoListItem {
 
     public void setChecked(boolean checked) {
         isChecked = checked;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Integer getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
+    }
+
+    public List<ToDoListItem> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<ToDoListItem> children) {
+        this.children = children;
     }
 }

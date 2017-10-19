@@ -1,14 +1,15 @@
 "use strict";
 
-function Item(id, text, check){
+function Item(id, text, check, childrenArray){
     var item = this;
+    var child = new ToDoList();
 
     this.element = prepareElement();
 
     function prepareDelBtn() {
         var btn = $("<BUTTON>");
         btn.text("X");
-        btn.addClass("btn btn-danger")
+        btn.addClass("btn btn-danger");
         btn.click(function(){
             toDoRepository.deleteItem(item.element.attr("id"));
             item.element.remove();
@@ -19,7 +20,7 @@ function Item(id, text, check){
     function createSubList() {
         var btn = $("<BUTTON>");
         btn.text("+");
-        btn.addClass("btn btn-success")
+        btn.addClass("btn btn-success");
         btn.click(function(){
             item.element.append(new ToDoList().element);
         });
@@ -29,6 +30,7 @@ function Item(id, text, check){
     function prepareElement() {
         var elem = $("<LI>");
         var div = $("<DIV>");
+        var subList = $("<DIV>");
 
         //elem.addClass("list-group-item");
         elem.append(prepareCheckbox());
@@ -37,9 +39,15 @@ function Item(id, text, check){
         div.append(prepareDelBtn());
         div.append(createSubList());
         elem.append(div);
+        elem.append(subList);
+        subList.addClass("sub-list");
         div.addClass("btn-group");
         if(check){
             elem.addClass("done");
+        }
+        if(childrenArray.length !== 0){
+            createChildren(childrenArray);
+            subList.append(child.element);
         }
         return elem;
     }
@@ -47,7 +55,7 @@ function Item(id, text, check){
     function prepareCheckbox(){
         var cb = $("<INPUT>", {type: "checkbox"});
         cb.prop("checked", check);
-        cb.change(function(e){
+        cb.change(function(){
             if(this.checked){
                 item.element.addClass("done");
                 toDoRepository.checkItem(item.element.attr("id"));
@@ -57,5 +65,11 @@ function Item(id, text, check){
             }
         });
         return cb;
+    }
+
+    function createChildren(children) {
+        for(var i = 0; i < children.length; i++){
+            child.addItem(children[i].id, children[i].itemValue, children[i].checked, children[i].children);
+        }
     }
 }
