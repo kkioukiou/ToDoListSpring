@@ -43,6 +43,14 @@ public class ToDoController {
         return new ResponseEntity(id, HttpStatus.OK);
     }
 
+    @PutMapping(path = "/item", produces = "application/json", consumes="application/json")
+    public ResponseEntity updateItemValue(@RequestBody ToDoListItem t){
+        ToDoListItem toDoListItem = toDoItemsRepository.findOne(t.getId());
+        toDoListItem.setItemValue(t.getItemValue());
+        toDoItemsRepository.save(toDoListItem);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @PutMapping(path = "/item")
     public ResponseEntity checkedItem(@RequestBody int id){
         ToDoListItem t;

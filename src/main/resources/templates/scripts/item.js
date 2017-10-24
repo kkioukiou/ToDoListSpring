@@ -17,7 +17,18 @@ function Item(id, text, check, childrenArray){
         return btn;
     }
 
-    function createSubList() {
+    function prepareEditBtn() {
+        var btn = $("<BUTTON>");
+        btn.text("Edit");
+        btn.addClass("btn btn-danger");
+        btn.click(function(){
+            toDoRepository.deleteItem(item.element.attr("id"));
+            item.element.remove();
+        });
+        return btn;
+    }
+
+    function prepareCreateSubList() {
         var btn = $("<BUTTON>");
         btn.text("+");
         btn.addClass("btn btn-success");
@@ -36,8 +47,9 @@ function Item(id, text, check, childrenArray){
         elem.append(prepareCheckbox());
         elem.append(text);
         elem.attr("id", id);
+        div.append(prepareEditBtn());
         div.append(prepareDelBtn());
-        div.append(createSubList());
+        div.append(prepareCreateSubList());
         elem.append(div);
         elem.append(subList);
         subList.addClass("sub-list");
