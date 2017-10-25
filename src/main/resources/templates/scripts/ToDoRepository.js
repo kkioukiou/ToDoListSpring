@@ -38,6 +38,19 @@ function ToDoRepository(){
         });
     };
 
+    this.editItemValue = function (id, newValue) {
+        $.ajax({
+            type: 'PUT',
+            url: '/api/todo/item',
+            contentType: 'application/json',
+            data: JSON.stringify({"id" : id, "itemValue" : newValue}),
+            success: function (response) {
+                console.log(response);
+                toDoRepository.getItems();
+            }
+        });
+    };
+
     this.deleteItem = function(id) {
         $.ajax({
             type: 'DELETE',

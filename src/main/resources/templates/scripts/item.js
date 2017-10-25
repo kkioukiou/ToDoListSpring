@@ -3,6 +3,7 @@
 function Item(id, text, check, childrenArray){
     var item = this;
     var child = new ToDoList();
+    var text = text;
 
     this.element = prepareElement();
 
@@ -20,11 +21,8 @@ function Item(id, text, check, childrenArray){
     function prepareEditBtn() {
         var btn = $("<BUTTON>");
         btn.text("Edit");
-        btn.addClass("btn btn-danger");
-        btn.click(function(){
-            toDoRepository.deleteItem(item.element.attr("id"));
-            item.element.remove();
-        });
+        btn.addClass("btn btn-warning");
+        btn.click(editItemValue());
         return btn;
     }
 
@@ -83,5 +81,17 @@ function Item(id, text, check, childrenArray){
         for(var i = 0; i < children.length; i++){
             child.addItem(children[i].id, children[i].itemValue, children[i].checked, children[i].children);
         }
+    }
+
+    function editItemValue() {
+        var id = item.element.attr("id");
+        var input = $("<INPUT>");
+        item.element.append(input);
+        input.keydown(function(e){
+            if(e.keyCode === 13 && this.value){
+                toDoRepository.editItemValue(id, this.value);
+                input.remove;
+            }
+        });
     }
 }
