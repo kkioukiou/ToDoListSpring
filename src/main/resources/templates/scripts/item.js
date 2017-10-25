@@ -4,6 +4,7 @@ function Item(id, text, check, childrenArray){
     var item = this;
     var child = new ToDoList();
     var text = text;
+    var id = id;
 
     this.element = prepareElement();
 
@@ -22,7 +23,9 @@ function Item(id, text, check, childrenArray){
         var btn = $("<BUTTON>");
         btn.text("Edit");
         btn.addClass("btn btn-warning");
-        btn.click(editItemValue());
+        btn.click(function () {
+            editItemValue();
+        });
         return btn;
     }
 
@@ -84,9 +87,8 @@ function Item(id, text, check, childrenArray){
     }
 
     function editItemValue() {
-        var id = item.element.attr("id");
         var input = $("<INPUT>");
-        item.element.append(input);
+        item.element.prepend(input);
         input.keydown(function(e){
             if(e.keyCode === 13 && this.value){
                 toDoRepository.editItemValue(id, this.value);
