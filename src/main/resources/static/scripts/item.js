@@ -71,9 +71,11 @@ function Item(id, text, check, childrenArray){
         cb.change(function(){
             if(this.checked){
                 item.element.addClass("done");
+                console.log(item.element.attr("id"));
                 toDoRepository.checkItem(item.element.attr("id"));
             } else {
                 item.element.removeClass("done");
+                console.log(item.element.attr("id"));
                 toDoRepository.checkItem(item.element.attr("id"));
             }
         });
@@ -91,7 +93,7 @@ function Item(id, text, check, childrenArray){
         item.element.prepend(input);
         input.keydown(function(e){
             if(e.keyCode === 13 && this.value){
-                toDoRepository.editItemValue(id, this.value);
+                toDoRepository.editItemValue(id, this.value, $(".to-do-list").attr("id"));
                 input.remove;
             }
         });

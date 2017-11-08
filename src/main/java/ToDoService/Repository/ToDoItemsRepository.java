@@ -10,4 +10,6 @@ import java.util.Set;
 public interface ToDoItemsRepository extends CrudRepository<ToDoListItem, Integer> {
     List<ToDoListItem> findByParentIdIsNull();
     List<ToDoListItem> findByParentIdLike(int id);
+    List<ToDoListItem> findByParentIdAndOwner(int parentId, int ownerId);
+    List<ToDoListItem> findByOwnerAndParentIdIsNull(int ownerId);
 }

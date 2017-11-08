@@ -8,11 +8,11 @@ function printFullArray(array) {
 }
 
 function clearOutPrint(){
-    $('#to-do-list li').remove();
+    $('.to-do-list li').remove();
 }
 
 var list = new ToDoList();
 var toDoRepository = new ToDoRepository();
-toDoRepository.getItems();
+toDoRepository.getItems($(".to-do-list").attr("id"));
 
-$("#to-do-list").append(list.element);
+$(".to-do-list").append(list.element);

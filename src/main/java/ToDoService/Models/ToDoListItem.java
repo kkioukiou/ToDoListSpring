@@ -21,6 +21,8 @@ public class ToDoListItem implements Serializable{
     private boolean isChecked;
     @Column(name = "parent_id")
     private Integer parentId;
+    @Column(name = "owner")
+    private int owner;
 
     @OneToMany(mappedBy = "parentId", cascade = CascadeType.ALL)
     private List<ToDoListItem> children = new ArrayList<>();
@@ -63,5 +65,25 @@ public class ToDoListItem implements Serializable{
 
     public void setChildren(List<ToDoListItem> children) {
         this.children = children;
+    }
+
+    public int getOwner() {
+        return owner;
+    }
+
+    public void setOwner(int owner) {
+        this.owner = owner;
+    }
+
+    @Override
+    public String toString() {
+        return "ToDoListItem{" +
+                "id=" + id +
+                ", itemValue='" + itemValue + '\'' +
+                ", isChecked=" + isChecked +
+                ", parentId=" + parentId +
+                ", owner=" + owner +
+                ", children=" + children +
+                '}';
     }
 }
