@@ -3,3 +3,11 @@
 	font-size: 22px;
 	color: #004080;
 }
+
+h2 {
+	text-align: center;
+}
+
+.done {
+	text-decoration: line-through;
+}
