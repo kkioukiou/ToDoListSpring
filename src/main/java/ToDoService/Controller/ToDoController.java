@@ -2,9 +2,13 @@ package ToDoService.Controller;
 
 import ToDoService.Models.ToDoListItem;
 import ToDoService.Repository.ToDoItemsRepository;
+import ToDoService.Security.SecurityModels.User;
+import ToDoService.Security.SecurityService.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,19 +23,23 @@ public class ToDoController {
     @Autowired
     private ToDoItemsRepository toDoItemsRepository;
 
-    @GetMapping("/item/getAllItems/{id}")
-    public @ResponseBody Iterable<ToDoListItem> getAllItems(@PathVariable int id){
-        return toDoItemsRepository.findByOwnerAndParentIdIsNull(id);
+    @Autowired
+    private UserService userService;
+
+    private Authentication auth;
+
+    @GetMapping("/item/getAllItems")
+    public @ResponseBody Iterable<ToDoListItem> getAllItems(){
+        auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
+        return toDoItemsRepository.findByOwnerAndParentIdIsNull(user.getId());
     }
 
     @PostMapping(value = "/item/insertNewItem/", consumes="application/json")
     public ResponseEntity insertItem(@RequestBody ToDoListItem t){
-        toDoItemsRepository.save(t);
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
-    @PostMapping(value = "/item/insertChild/", consumes="application/json")
-    public ResponseEntity insertChildItem(@RequestBody ToDoListItem t){
+        auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
+        t.setOwner(user.getId());
         toDoItemsRepository.save(t);
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -44,8 +52,11 @@ public class ToDoController {
 
     @PutMapping(path = "/item/edit/", consumes="application/json")
     public ResponseEntity updateItemValue(@RequestBody ToDoListItem t){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByEmail(auth.getName());
         ToDoListItem toDoListItem = toDoItemsRepository.findOne(t.getId());
         toDoListItem.setItemValue(t.getItemValue());
+        toDoListItem.setOwner(user.getId()); //ToDo I'm not sure what it's need
         toDoItemsRepository.save(toDoListItem);
         return new ResponseEntity(HttpStatus.OK);
     }

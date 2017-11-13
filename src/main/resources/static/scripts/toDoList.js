@@ -9,10 +9,10 @@ function ToDoList(){
         input.keydown(function(e){
             if(e.keyCode === 13 && this.value){
                 if (input.closest("li").attr("id") > 0){
-                    toDoRepository.insertChildItem(input.closest("li").attr("id"), this.value, $(".to-do-list").attr("id"));
+                    toDoRepository.insertChildItem(input.closest("li").attr("id"), this.value);
                 } else {
                 console.log($(".to-do-list").attr("id"));
-                    toDoRepository.insertItem(this.value, $(".to-do-list").attr("id"));
+                    toDoRepository.insertItem(this.value);
                 }
                 input.val("");
             }

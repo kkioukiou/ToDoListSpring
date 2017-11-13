@@ -93,7 +93,7 @@ function Item(id, text, check, childrenArray){
         item.element.prepend(input);
         input.keydown(function(e){
             if(e.keyCode === 13 && this.value){
-                toDoRepository.editItemValue(id, this.value, $(".to-do-list").attr("id"));
+                toDoRepository.editItemValue(id, this.value);
                 input.remove;
             }
         });

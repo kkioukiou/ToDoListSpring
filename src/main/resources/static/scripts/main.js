@@ -13,6 +13,6 @@ function clearOutPrint(){
 
 var list = new ToDoList();
 var toDoRepository = new ToDoRepository();
-toDoRepository.getItems($(".to-do-list").attr("id"));
+toDoRepository.getItems();
 
 $(".to-do-list").append(list.element);
