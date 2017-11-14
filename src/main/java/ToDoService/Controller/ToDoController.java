@@ -28,47 +28,42 @@ public class ToDoController {
 
     private Authentication auth;
 
-    @GetMapping("/item/getAllItems")
-    public @ResponseBody Iterable<ToDoListItem> getAllItems(){
+    private User authUser(){
         auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findUserByEmail(auth.getName());
-        return toDoItemsRepository.findByOwnerAndParentIdIsNull(user.getId());
+        return userService.findUserByEmail(auth.getName());
     }
 
-    @PostMapping(value = "/item/insertNewItem/", consumes="application/json")
+    @GetMapping("/getAllItems")
+    public @ResponseBody Iterable<ToDoListItem> getAllItems(){
+        return toDoItemsRepository.findByOwnerAndParentIdIsNull(authUser().getId());
+    }
+
+    @PostMapping(value = "/insertNewItem", consumes="application/json")
     public ResponseEntity insertItem(@RequestBody ToDoListItem t){
-        auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findUserByEmail(auth.getName());
-        t.setOwner(user.getId());
+        t.setOwner(authUser().getId());
         toDoItemsRepository.save(t);
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @DeleteMapping("/item/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity deleteItem(@PathVariable int id){
         toDoItemsRepository.delete(id);
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @PutMapping(path = "/item/edit/", consumes="application/json")
+    @PutMapping(path = "/edit", consumes="application/json")
     public ResponseEntity updateItemValue(@RequestBody ToDoListItem t){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findUserByEmail(auth.getName());
         ToDoListItem toDoListItem = toDoItemsRepository.findOne(t.getId());
         toDoListItem.setItemValue(t.getItemValue());
-        toDoListItem.setOwner(user.getId()); //ToDo I'm not sure what it's need
+        toDoListItem.setOwner(authUser().getId()); //ToDo I'm not sure what it's need
         toDoItemsRepository.save(toDoListItem);
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @PutMapping(path = "/item/check/", consumes = "application/json")
+    @PutMapping(path = "/check", consumes = "application/json")
     public ResponseEntity checkedItem(@RequestBody ToDoListItem t){
         ToDoListItem toDoListItem = toDoItemsRepository.findOne(t.getId());
-        if (toDoListItem.isChecked()) {
-            toDoListItem.setChecked(false);
-        } else {
-            toDoListItem.setChecked(true);
-        }
+        toDoListItem.setChecked(!toDoListItem.isChecked());
         toDoItemsRepository.save(toDoListItem);
         return new ResponseEntity(HttpStatus.OK);
     }
