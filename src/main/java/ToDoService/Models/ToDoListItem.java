@@ -1,14 +1,16 @@
 package ToDoService.Models;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "to_do_list_item")
+//@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class ToDoListItem implements Serializable{
 
     @Id
@@ -26,6 +28,16 @@ public class ToDoListItem implements Serializable{
 
     @OneToMany(mappedBy = "parentId", cascade = CascadeType.ALL)
     private List<ToDoListItem> children = new ArrayList<>();
+
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "to_do_list_item_labels",
+            joinColumns = @JoinColumn(name = "to_do_list_items_id"),
+            inverseJoinColumns = @JoinColumn(name = "labels_id")
+    )
+    private List<LabelForItemList> labels = new ArrayList<>();
 
     public String getItemValue() {
         return itemValue;
@@ -75,6 +87,14 @@ public class ToDoListItem implements Serializable{
         this.owner = owner;
     }
 
+    public List<LabelForItemList> getLabels() {
+        return labels;
+    }
+
+    public void setLabels(LabelForItemList labels) {
+        this.labels.add(labels);
+    }
+
     @Override
     public String toString() {
         return "ToDoListItem{" +
@@ -84,6 +104,7 @@ public class ToDoListItem implements Serializable{
                 ", parentId=" + parentId +
                 ", owner=" + owner +
                 ", children=" + children +
+                ", labels=" + labels +
                 '}';
     }
 }

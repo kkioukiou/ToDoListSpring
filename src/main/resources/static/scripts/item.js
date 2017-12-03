@@ -1,6 +1,6 @@
 "use strict";
 
-function Item(id, text, check, childrenArray){
+function Item(id, text, check, childrenArray, labels){
     var item = this;
     var child = new ToDoList();
     var text = text;
@@ -39,29 +39,68 @@ function Item(id, text, check, childrenArray){
         return btn;
     }
 
+    function prepareAddLabel() {
+        var dropdown = $("<DIV>");
+        dropdown.attr("class", "dropdown");
+        var dropdownMenuButton = $("<BUTTON>");
+        dropdownMenuButton.attr("class", "btn btn-secondary dropdown-toggle");
+        dropdownMenuButton.attr("type", "button");
+        dropdownMenuButton.attr("id", "dropdownMenuButton");
+        dropdownMenuButton.attr("data-toggle", "dropdown");
+        dropdownMenuButton.attr("aria-haspopup", "true");
+        dropdownMenuButton.attr("aria-expanded", "false");
+        dropdownMenuButton.text("AddLabel");
+        var dropdownMenu = $("<DIV>");
+        dropdownMenu.attr("class", "dropdown-menu to-do-item-labels");
+        dropdownMenu.attr("aria-labelledby", "dropdownMenuButton");
+        dropdownMenuButton.click(function () {
+            toDoRepository.getAllLabelsForEveryItem(id);
+        });
+        dropdown.append(dropdownMenu);
+        dropdown.append(dropdownMenuButton);
+
+        return dropdown;
+    }
+
+    // function clearLabelsList() {
+    //     $(".labelClass").remove();
+    // }
+
     function prepareElement() {
         var elem = $("<LI>");
-        var div = $("<DIV>");
+        var card = $("<DIV>");
+        var cardBody = $("<DIV>");
+        var btnGroup = $("<DIV>");
         var subList = $("<DIV>");
 
         //elem.addClass("list-group-item");
-        elem.append(prepareCheckbox());
-        elem.append(text);
+
+        card.addClass("card");
+        cardBody.addClass("card-body");
+        card.append(cardBody);
+        cardBody.append(prepareCheckbox());
+        cardBody.append(text);
         elem.attr("id", id);
-        div.append(prepareEditBtn());
-        div.append(prepareDelBtn());
-        div.append(prepareCreateSubList());
-        elem.append(div);
-        elem.append(subList);
+        btnGroup.append(prepareEditBtn());
+        btnGroup.append(prepareDelBtn());
+        btnGroup.append(prepareAddLabel());
+        btnGroup.append(prepareCreateSubList());
+        cardBody.append(btnGroup);
+        cardBody.append(subList);
         subList.addClass("sub-list");
-        div.addClass("btn-group");
+        btnGroup.addClass("btn-group");
         if(check){
             elem.addClass("done");
+        }
+        if (labels.length !== 0){
+            var cardFooter = printLabels(labels);
+            card.append(cardFooter);
         }
         if(childrenArray.length !== 0){
             createChildren(childrenArray);
             subList.append(child.element);
         }
+        elem.append(card);
         return elem;
     }
 
@@ -82,9 +121,19 @@ function Item(id, text, check, childrenArray){
         return cb;
     }
 
+    function printLabels(labels) {
+        var cardFooter = $("<DIV>");
+        cardFooter.addClass("card-footer");
+        for (var i = 0; i < labels.length; i++){
+            var label = new LabelForLabelsListInItemFooter(labels[i].id, labels[i].labelName, labels[i].owner);
+            cardFooter.append(label.element);
+        }
+        return cardFooter;
+    }
+
     function createChildren(children) {
         for(var i = 0; i < children.length; i++){
-            child.addItem(children[i].id, children[i].itemValue, children[i].checked, children[i].children);
+            child.addItem(children[i].id, children[i].itemValue, children[i].checked, children[i].children, children[i].labels);
         }
     }
 

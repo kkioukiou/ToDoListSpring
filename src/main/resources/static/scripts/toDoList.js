@@ -11,7 +11,6 @@ function ToDoList(){
                 if (input.closest("li").attr("id") > 0){
                     toDoRepository.insertChildItem(input.closest("li").attr("id"), this.value);
                 } else {
-                console.log($(".to-do-list").attr("id"));
                     toDoRepository.insertItem(this.value);
                 }
                 input.val("");
@@ -22,8 +21,8 @@ function ToDoList(){
 
     this.element.append(prepareAdd());
 
-    this.addItem = function (id, text, check, children){
-        var item = new Item(id, text, check, children);
+    this.addItem = function (id, text, check, children, labels){
+        var item = new Item(id, text, check, children, labels);
         list.element.append(item.element);
     };
 }

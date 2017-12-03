@@ -66,5 +66,70 @@ function ToDoRepository(){
                 console.log(response);
             }
         });
+    };
+
+    this.getAllLabels = function(){
+        $.ajax({
+            type: 'GET',
+            url: '/api/todo/getAllLabels',
+            success: function(response){
+                printLabelsArray(response);
+            }
+        });
+    };
+
+    this.getAllLabelsForEveryItem = function(id){
+        $.ajax({
+            type: 'GET',
+            url: '/api/todo/getAllLabelsForEveryItem/' + id,
+            success: function(response){
+                printLabelsForEveryItemArray(response);
+            }
+        });
+    };
+
+    this.insertLabel = function(labelName) {
+        $.ajax({
+            type: 'POST',
+            url: '/api/todo/insertNewLabel',
+            contentType: 'application/json',
+            data: JSON.stringify({"labelName" : labelName}),
+            success: function (response) {
+                toDoRepository.getAllLabels();
+            }
+        });
+    };
+
+    this.deleteLabel = function (id) {
+        $.ajax({
+            type: 'DELETE',
+            url: '/api/todo/deleteLabel/' + id,
+            success: function () {
+                toDoRepository.getAllLabels();
+                toDoRepository.getItems();
+            }
+        });
+    };
+
+    this.getItemsByLabelId = function(id){
+        $.ajax({
+            type: 'GET',
+            url: '/api/todo/getAllItemsByLabelId/' + id,
+            success: function(response){
+                printFullArray(response);
+            }
+        });
+    };
+
+    this.addLabelToItem = function (itemId, labelId) {
+        $.ajax({
+            type: 'PUT',
+            url: '/api/todo/addLabelToItem/' + itemId,
+            contentType: 'application/json',
+            data: JSON.stringify({"labelId" : labelId}),
+            success: function (response) {
+                toDoRepository.getItems();
+            }
+        });
     }
 }

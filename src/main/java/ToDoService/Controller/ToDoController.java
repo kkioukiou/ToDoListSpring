@@ -1,6 +1,11 @@
 package ToDoService.Controller;
 
+import ToDoService.Models.LabelForItemList;
+import ToDoService.Models.Labels;
 import ToDoService.Models.ToDoListItem;
+import ToDoService.Models.ToDoListItemForLabelsList;
+import ToDoService.Repository.LabelForItemListRepository;
+import ToDoService.Repository.LabelsRepository;
 import ToDoService.Repository.ToDoItemsRepository;
 import ToDoService.Security.SecurityModels.User;
 import ToDoService.Security.SecurityService.UserService;
@@ -12,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 @Controller
@@ -21,16 +27,73 @@ public class ToDoController {
     private final Logger logger = Logger.getLogger("Logger");
 
     @Autowired
+    private LabelsRepository labelsRepository;
+
+    @Autowired
+    private LabelForItemListRepository labelForItemListRepository;
+
+    @Autowired
     private ToDoItemsRepository toDoItemsRepository;
 
     @Autowired
     private UserService userService;
 
-    private Authentication auth;
-
     private User authUser(){
-        auth = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return userService.findUserByEmail(auth.getName());
+    }
+
+    @PostMapping(value = "/insertNewLabel", consumes = "application/json")
+    public ResponseEntity insertLabel(@RequestBody Labels l){
+        l.setOwner(authUser().getId());
+        labelsRepository.save(l);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/addLabelToItem/{id}", consumes = "application/json")
+    public ResponseEntity addLabelToItem(@PathVariable int id, @RequestBody Labels l){
+        ToDoListItem item = toDoItemsRepository.findOne(id);
+        LabelForItemList label = labelForItemListRepository.findOne(l.getLabelId());
+        if (!item.getLabels().contains(label)){
+            item.setLabels(label);
+            toDoItemsRepository.save(item);
+            return new ResponseEntity(HttpStatus.OK);
+        } else {
+            return new ResponseEntity(HttpStatus.CONFLICT);
+        }
+
+    }
+
+    @DeleteMapping("/deleteLabel/{id}")
+    public ResponseEntity deleteLabel(@PathVariable int id){
+        labelsRepository.delete(id);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllItemsByLabelId/{id}")
+    public @ResponseBody Iterable<ToDoListItemForLabelsList> getAllItemsByLabelId(@PathVariable int id){
+        Labels label = labelsRepository.findOne(id);
+        if (label.getOwner() == authUser().getId()){
+            return label.getToDoListItems();
+        } else {
+            return null; //todo need change this string because null isn't true way)
+        }
+    }
+
+    @GetMapping("/getAllLabelsForEveryItem/{id}")
+    public @ResponseBody Iterable<LabelForItemList> getAllLabelsForEveryItem(@PathVariable int id){
+        ToDoListItem t = toDoItemsRepository.findOne(id);
+        if (t.getOwner() == authUser().getId()){
+            List<LabelForItemList> l = labelForItemListRepository.findByOwnerLike(authUser().getId());
+            l.removeAll(t.getLabels());
+            return l;
+        }
+        return null;
+    }
+
+    @GetMapping("/getAllLabels")
+    public @ResponseBody Iterable<LabelForItemList> getAllLabels(){
+        return labelForItemListRepository.findByOwnerLike(authUser().getId());
     }
 
     @GetMapping("/getAllItems")
