@@ -1,11 +1,12 @@
 package ToDoService.Models;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -25,6 +26,8 @@ public class ToDoListItem implements Serializable{
     private Integer parentId;
     @Column(name = "owner")
     private int owner;
+    @Column(name = "remind_me")
+    private Date remindMe;
 
     @OneToMany(mappedBy = "parentId", cascade = CascadeType.ALL)
     private List<ToDoListItem> children = new ArrayList<>();
@@ -93,6 +96,14 @@ public class ToDoListItem implements Serializable{
 
     public void setLabels(LabelForItemList labels) {
         this.labels.add(labels);
+    }
+
+    public Date getRemindMe() {
+        return remindMe;
+    }
+
+    public void setRemindMe(Date remindMe) {
+        this.remindMe = remindMe;
     }
 
     @Override

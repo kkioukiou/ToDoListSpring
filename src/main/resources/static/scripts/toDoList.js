@@ -21,8 +21,8 @@ function ToDoList(){
 
     this.element.append(prepareAdd());
 
-    this.addItem = function (id, text, check, children, labels){
-        var item = new Item(id, text, check, children, labels);
+    this.addItem = function (id, text, check, children, labels, remindMe){
+        var item = new Item(id, text, check, children, labels, remindMe);
         list.element.append(item.element);
     };
 }

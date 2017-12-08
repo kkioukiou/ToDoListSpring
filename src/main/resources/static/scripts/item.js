@@ -1,6 +1,6 @@
 "use strict";
 
-function Item(id, text, check, childrenArray, labels){
+function Item(id, text, check, childrenArray, labels, remindMe){
     var item = this;
     var child = new ToDoList();
     var text = text;
@@ -27,6 +27,43 @@ function Item(id, text, check, childrenArray, labels){
             editItemValue();
         });
         return btn;
+    }
+
+    function prepareRemindMeBtn() {
+        var btn = $("<BUTTON>");
+        btn.text("DataTime");
+        btn.addClass("btn btn-warning");
+        btn.click(function () {
+            dataTimeInput();
+        });
+        return btn;
+    }
+
+    function dataTimeInput() {
+        var dataTimeForm = $("<FORM>");
+        var inputDate = $("<INPUT>");
+        var submit = $("<INPUT>");
+        inputDate.attr("type", "datetime-local");
+        inputDate.attr("pattern" , '(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4} (0[0-9]|1[0-9]|2[0-3])(:[0-5][0-9])');
+        inputDate.attr("placeholder" ,"dd.MM.yyyy'T'HH:mm" );
+        submit.attr("type", "submit");
+        submit.attr("value", "Submit");
+        submit.click(function () {
+            console.log(inputDate.val());
+            toDoRepository.setRemindMeTimer(id, inputDate.val());
+            inputDate.remove();
+            submit.remove();
+        });
+        dataTimeForm.append(inputDate);
+        item.element.append(dataTimeForm);
+        item.element.append(submit);
+    }
+
+    function timeOut(targetTime) {
+        var currentTime = Date.now();
+        setTimeout(function () {
+            alert(text);
+        }, (targetTime - currentTime));
     }
 
     function prepareCreateSubList() {
@@ -62,10 +99,6 @@ function Item(id, text, check, childrenArray, labels){
         return dropdown;
     }
 
-    // function clearLabelsList() {
-    //     $(".labelClass").remove();
-    // }
-
     function prepareElement() {
         var elem = $("<LI>");
         var card = $("<DIV>");
@@ -84,6 +117,7 @@ function Item(id, text, check, childrenArray, labels){
         btnGroup.append(prepareEditBtn());
         btnGroup.append(prepareDelBtn());
         btnGroup.append(prepareAddLabel());
+        btnGroup.append(prepareRemindMeBtn());
         btnGroup.append(prepareCreateSubList());
         cardBody.append(btnGroup);
         cardBody.append(subList);
@@ -99,6 +133,9 @@ function Item(id, text, check, childrenArray, labels){
         if(childrenArray.length !== 0){
             createChildren(childrenArray);
             subList.append(child.element);
+        }
+        if(remindMe !== null && !check){
+            timeOut(remindMe);
         }
         elem.append(card);
         return elem;

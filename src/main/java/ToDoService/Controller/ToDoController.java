@@ -17,6 +17,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -119,6 +122,16 @@ public class ToDoController {
         ToDoListItem toDoListItem = toDoItemsRepository.findOne(t.getId());
         toDoListItem.setItemValue(t.getItemValue());
         toDoListItem.setOwner(authUser().getId()); //ToDo I'm not sure what it's need
+        toDoItemsRepository.save(toDoListItem);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PutMapping(path = "/setRemindMeTimer/{id}", consumes="application/json")
+    public ResponseEntity setRemindMeTimer(@PathVariable int id, @RequestBody String t) throws ParseException {
+        ToDoListItem toDoListItem = toDoItemsRepository.findOne(id);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+        Date time = simpleDateFormat.parse(t);
+        toDoListItem.setRemindMe(time);
         toDoItemsRepository.save(toDoListItem);
         return new ResponseEntity(HttpStatus.OK);
     }

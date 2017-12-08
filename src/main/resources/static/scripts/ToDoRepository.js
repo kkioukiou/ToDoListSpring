@@ -36,6 +36,18 @@ function ToDoRepository(){
         });
     };
 
+    this.setRemindMeTimer = function (id, date) {
+        $.ajax({
+            type: 'PUT',
+            url: '/api/todo/setRemindMeTimer/' + id,
+            contentType: 'application/json',
+            data: date,
+            success: function (response) {
+                toDoRepository.getItems();
+            }
+        });
+    };
+
     this.editItemValue = function (id, newValue) {
         $.ajax({
             type: 'PUT',

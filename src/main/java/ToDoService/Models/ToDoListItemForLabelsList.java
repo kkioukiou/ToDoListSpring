@@ -1,7 +1,11 @@
 package ToDoService.Models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "to_do_list_item")
@@ -19,6 +23,8 @@ public class ToDoListItemForLabelsList implements Serializable {
     private Integer parentId;
     @Column(name = "owner")
     private int owner;
+    @Column(name = "remind_me")
+    private Date remindMe;
 
     public int getId() {
         return id;
@@ -60,6 +66,14 @@ public class ToDoListItemForLabelsList implements Serializable {
         this.owner = owner;
     }
 
+    public Date getRemindMe() {
+        return remindMe;
+    }
+
+    public void setRemindMe(Date remindMe) {
+        this.remindMe = remindMe;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -70,17 +84,19 @@ public class ToDoListItemForLabelsList implements Serializable {
         if (id != that.id) return false;
         if (isChecked != that.isChecked) return false;
         if (owner != that.owner) return false;
-        if (itemValue != null ? !itemValue.equals(that.itemValue) : that.itemValue != null) return false;
-        return parentId != null ? parentId.equals(that.parentId) : that.parentId == null;
+        if (!itemValue.equals(that.itemValue)) return false;
+        if (parentId != null ? !parentId.equals(that.parentId) : that.parentId != null) return false;
+        return remindMe != null ? remindMe.equals(that.remindMe) : that.remindMe == null;
     }
 
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + (itemValue != null ? itemValue.hashCode() : 0);
+        result = 31 * result + itemValue.hashCode();
         result = 31 * result + (isChecked ? 1 : 0);
         result = 31 * result + (parentId != null ? parentId.hashCode() : 0);
         result = 31 * result + owner;
+        result = 31 * result + (remindMe != null ? remindMe.hashCode() : 0);
         return result;
     }
 }
