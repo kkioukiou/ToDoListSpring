@@ -5,9 +5,9 @@
 <head>
 	<title>Spring Security Tutorial</title>
 	<link rel="stylesheet" type="text/css" th:href="@{/css/login.css}" />
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}" />
   	<script src="/scripts/libs_jquery_3.2.1_jquery.js"></script>
-  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  	<script src="/scripts/bootstrap.min.js"></script>
 </head>
 
 <body>
@@ -16,7 +16,7 @@
 	</form>	
 	
 	<div class="container">
-		<img th:src="@{/images/login.jpg}" class="img-responsive center-block" width="300" height="300" alt="Logo" />
+		<!--<img th:src="@{/images/login.jpg}" class="img-responsive center-block" width="300" height="300" alt="Logo" />-->
 		<form th:action="@{/login}" method="POST" class="form-signin">
 			<h3 class="form-signin-heading" th:text="Welcome"></h3>
 			<br/>

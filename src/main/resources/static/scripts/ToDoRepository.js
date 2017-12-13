@@ -75,7 +75,6 @@ function ToDoRepository(){
             contentType: 'application/json',
             data: JSON.stringify({"id" : id}),
             success: function (response) {
-                console.log(response);
             }
         });
     };

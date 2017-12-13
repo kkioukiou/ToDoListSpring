@@ -147,11 +147,9 @@ function Item(id, text, check, childrenArray, labels, remindMe){
         cb.change(function(){
             if(this.checked){
                 item.element.addClass("done");
-                console.log(item.element.attr("id"));
                 toDoRepository.checkItem(item.element.attr("id"));
             } else {
                 item.element.removeClass("done");
-                console.log(item.element.attr("id"));
                 toDoRepository.checkItem(item.element.attr("id"));
             }
         });
@@ -170,7 +168,7 @@ function Item(id, text, check, childrenArray, labels, remindMe){
 
     function createChildren(children) {
         for(var i = 0; i < children.length; i++){
-            child.addItem(children[i].id, children[i].itemValue, children[i].checked, children[i].children, children[i].labels);
+            child.addItem(children[i].id, children[i].itemValue, children[i].checked, children[i].children, children[i].labels, children[i].remindMe);
         }
     }
 
